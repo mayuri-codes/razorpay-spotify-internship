@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Razorpay Advanced Clone</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, sans-serif;
+}
+
+body{
+    background:#f5f7fa;
+}
+
+/* NAVBAR */
+nav{
+    background:#02042a;
+    color:#fff;
+    padding:15px 50px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+nav h2{ color:#4f9cf9; }
+
+nav button{
+    background:#4f9cf9;
+    border:none;
+    padding:8px 16px;
+    color:#fff;
+    border-radius:5px;
+    cursor:pointer;
+}
+
+/* SECTIONS */
+.section{ display:none; padding:50px; }
+.active{ display:block; }
+
+/* HERO */
+.hero{
+    background:#02042a;
+    color:#fff;
+    padding:80px;
+}
+.hero h1{ font-size:40px; }
+.hero p{ margin:15px 0; }
+.hero button{
+    padding:12px 20px;
+    background:#4f9cf9;
+    border:none;
+    color:#fff;
+    border-radius:5px;
+}
+
+/* FORM */
+.form-box{
+    max-width:420px;
+    background:#fff;
+    margin:auto;
+    padding:30px;
+    border-radius:10px;
+    box-shadow:0 10px 25px rgba(0,0,0,0.2);
+}
+.form-box h2{
+    text-align:center;
+    margin-bottom:20px;
+    color:#02042a;
+}
+input, select{
+    width:100%;
+    padding:12px;
+    margin:10px 0;
+    border-radius:6px;
+    border:1px solid #ccc;
+}
+.form-box button{
+    width:100%;
+    padding:12px;
+    background:#4f9cf9;
+    border:none;
+    color:#fff;
+    border-radius:6px;
+}
+
+/* LOADER */
+.loader{
+    border:6px solid #eee;
+    border-top:6px solid #4f9cf9;
+    border-radius:50%;
+    width:60px;
+    height:60px;
+    animation:spin 1s linear infinite;
+    margin:20px auto;
+}
+@keyframes spin{
+    0%{transform:rotate(0deg)}
+    100%{transform:rotate(360deg)}
+}
+
+/* QR */
+.qr{
+    text-align:center;
+}
+.qr img{
+    width:200px;
+    margin:20px 0;
+}
+
+/* SUCCESS */
+.success{
+    text-align:center;
+    background:#fff;
+    max-width:450px;
+    margin:auto;
+    padding:30px;
+    border-radius:10px;
+    box-shadow:0 10px 25px rgba(0,0,0,0.2);
+}
+.success h2{ color:green; }
+
+/* HISTORY */
+.history{
+    max-width:600px;
+    background:#fff;
+    margin:auto;
+    padding:30px;
+    border-radius:10px;
+    box-shadow:0 10px 25px rgba(0,0,0,0.2);
+}
+.history h2{
+    text-align:center;
+    margin-bottom:15px;
+}
+.history ul{
+    list-style:none;
+}
+.history li{
+    padding:10px;
+    border-bottom:1px solid #ddd;
+}
+</style>
+</head>
+
+<body>
+
+<nav>
+    <h2>Razorpay</h2>
+    <button onclick="showSection('history')">Transactions</button>
+</nav>
+
+<!-- HOME -->
+<div class="hero section active" id="home">
+    <h1>Power Your Payments</h1>
+    <p>UPI, Cards & Net Banking for Indian Businesses 🇮🇳</p>
+    <button onclick="showSection('signup')">Get Started</button>
+</div>
+
+<!-- SIGNUP -->
+<div class="section" id="signup">
+    <div class="form-box">
+        <h2>Create Account</h2>
+        <input type="text" id="name" placeholder="Business Name">
+        <input type="email" id="email" placeholder="Email">
+        <input type="number" id="amount" placeholder="Payment Amount (₹)">
+        <button onclick="goPayment()">Continue</button>
+    </div>
+</div>
+
+<!-- PAYMENT -->
+<div class="section" id="payment">
+    <div class="form-box">
+        <h2>Payment Details</h2>
+        <p id="showAmount"></p>
+
+        <select id="bank">
+            <option value="">Select Bank</option>
+            <option>SBI Bank</option>
+            <option>HDFC Bank</option>
+            <option>ICICI Bank</option>
+            <option>Axis Bank</option>
+        </select>
+
+        <button onclick="showUPI()">Pay via UPI</button>
+    </div>
+</div>
+
+<!-- UPI QR -->
+<div class="section" id="upi">
+    <div class="form-box qr">
+        <h2>Scan UPI QR</h2>
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay">
+        <div class="loader"></div>
+        <p>Processing payment...</p>
+    </div>
+</div>
+
+<!-- SUCCESS -->
+<div class="section" id="success">
+    <div class="success">
+        <h2>Payment Successful ✅</h2>
+        <p id="finalMsg"></p>
+        <button onclick="showSection('home')">Go Home</button>
+    </div>
+</div>
+
+<!-- HISTORY -->
+<div class="section" id="history">
+    <div class="history">
+        <h2>Transaction History</h2>
+        <ul id="historyList"></ul>
+        <button onclick="showSection('home')">Back</button>
+    </div>
+</div>
+
+<script>
+let amount=0, bank="", history=[];
+
+function showSection(id){
+    document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+}
+
+function goPayment(){
+    let name=document.getElementById("name").value;
+    amount=document.getElementById("amount").value;
+
+    if(name==""||amount==""){
+        alert("All fields required");
+        return;
+    }
+    document.getElementById("showAmount").innerText="Amount: ₹"+amount;
+    showSection('payment');
+}
+
+function showUPI(){
+    bank=document.getElementById("bank").value;
+    if(bank==""){
+        alert("Select bank");
+        return;
+    }
+    showSection('upi');
+
+    setTimeout(()=>{
+        let record=`₹${amount} paid via ${bank}`;
+        history.push(record);
+        updateHistory();
+        document.getElementById("finalMsg").innerText=record;
+        showSection('success');
+    },3000);
+}
+
+function updateHistory(){
+    let list=document.getElementById("historyList");
+    list.innerHTML="";
+    history.forEach(h=>{
+        let li=document.createElement("li");
+        li.innerText=h;
+        list.appendChild(li);
+    });
+}
+</script>
+
+</body>
+</html>

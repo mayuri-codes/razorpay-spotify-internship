@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Creative Login Project</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Segoe UI',sans-serif;
+}
+
+body{
+    height:100vh;
+    background:linear-gradient(135deg,#1d2671,#c33764);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#fff;
+}
+
+/* LOGIN BOX */
+.login-box{
+    width:350px;
+    background:#fff;
+    color:#000;
+    padding:30px;
+    border-radius:15px;
+    box-shadow:0 15px 40px rgba(0,0,0,0.4);
+    animation:slide 1s ease;
+}
+
+@keyframes slide{
+    from{transform:translateY(50px);opacity:0}
+    to{transform:translateY(0);opacity:1}
+}
+
+.login-box h2{
+    text-align:center;
+    margin-bottom:20px;
+    color:#c33764;
+}
+
+input{
+    width:100%;
+    padding:12px;
+    margin:10px 0;
+    border-radius:8px;
+    border:1px solid #ccc;
+    outline:none;
+}
+
+button{
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:8px;
+    background:#c33764;
+    color:#fff;
+    font-size:16px;
+    cursor:pointer;
+}
+
+button:hover{
+    background:#a52a55;
+}
+
+/* DASHBOARD */
+.dashboard{
+    display:none;
+    width:90%;
+    max-width:600px;
+    background:#fff;
+    color:#000;
+    padding:30px;
+    border-radius:15px;
+    box-shadow:0 15px 40px rgba(0,0,0,0.4);
+    text-align:center;
+}
+
+.dashboard h1{
+    color:#1d2671;
+    margin-bottom:10px;
+}
+
+.card{
+    margin-top:20px;
+    padding:20px;
+    background:#f2f2f2;
+    border-radius:10px;
+}
+
+.logout{
+    margin-top:20px;
+    background:#1d2671;
+}
+</style>
+</head>
+
+<body>
+
+<!-- LOGIN PAGE -->
+<div class="login-box" id="loginBox">
+    <h2>Welcome Back 👋</h2>
+    <input type="email" id="email" placeholder="Email Address">
+    <input type="password" id="password" placeholder="Password">
+    <button onclick="login()">Login</button>
+</div>
+
+<!-- AFTER LOGIN DASHBOARD -->
+<div class="dashboard" id="dashboard">
+    <h1>Login Successful 🎉</h1>
+    <p id="userEmail"></p>
+
+    <div class="card">
+        <h3>Next Process</h3>
+        <p>
+            ✔ User Authentication Done <br>
+            ✔ Access Granted <br>
+            ✔ Ready for Web Application
+        </p>
+    </div>
+
+    <button class="logout" onclick="logout()">Logout</button>
+</div>
+
+<script>
+function login(){
+    let email = document.getElementById("email").value;
+    let password = document.getElementById("password").value;
+
+    if(email === ""){
+        alert("Email is required");
+        return;
+    }
+
+    if(password === ""){
+        alert("Password is required");
+        return;
+    }
+
+    if(password.length < 6){
+        alert("Password must be at least 6 characters");
+        return;
+    }
+
+    alert("Login Successful");
+
+    document.getElementById("loginBox").style.display="none";
+    document.getElementById("dashboard").style.display="block";
+    document.getElementById("userEmail").innerText = "Logged in as: " + email;
+}
+
+function logout(){
+    alert("Logged Out Successfully");
+    document.getElementById("dashboard").style.display="none";
+    document.getElementById("loginBox").style.display="block";
+}
+</script>
+
+</body>
+</html>
